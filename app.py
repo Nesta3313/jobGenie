@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from langchain_classic.agents import initialize_agent
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_classic.chains.retrieval import create_retrieval_chain
+from langchain_classic.memory import ConversationBufferMemory
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.tools import Tool
@@ -87,7 +88,9 @@ if retriever_tool:
         )
     )
 
-agent = initialize_agent(tools, llm, agent_type="zero-shot-react-description", verbose=True)
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+
+agent = initialize_agent(tools, llm, agent_type="zero-shot-react-description", verbose=True, memory=memory)
 
 query = st.text_area("Ask your Career Coach:", placeholder="e.g., 'What jobs fit my skills?' or 'Review my resume for improvements.'")
 
